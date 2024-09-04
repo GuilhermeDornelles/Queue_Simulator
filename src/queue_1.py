@@ -1,5 +1,5 @@
 # type: ignore
-class Queue:
+class SimpleQueue:
     def __init__(self, capacity) -> None:
         self.capacity = capacity
         self.status   = 0
@@ -8,7 +8,6 @@ class Queue:
         if (self.status < self.capacity):
             self.status += 1
             return True
-        
         return False
     
     def dequeue(self) -> bool:
