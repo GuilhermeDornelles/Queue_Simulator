@@ -21,14 +21,5 @@ class Scheduler:
         self.last_event_id += 1
         event.id = self.last_event_id
         
-        pos = 0
-        if len(self.events) > 0:
-            for i in range(len(self.events)):
-                if (event.time < self.events[i].time):
-                    pos = i-1
-                    break
-            if pos == 0:
-                pos = len(self.events)
-                
-        
-        self.events.insert(pos, event)
+        self.events.append(event)
+        self.events = sorted(self.events, key=lambda ev: ev.time)

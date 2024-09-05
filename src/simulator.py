@@ -41,7 +41,6 @@ class Simulator:
         self.queue.dequeue()
         
         if self.queue.status >= self.servers:
-            # TODO: Escalonar saída
             delta_time = self.time + self.random_interval(self.service_interval[0], self.service_interval[1])
             self.scheduler.add_event(Event(EventType.LEAVE, delta_time))
     
@@ -51,13 +50,11 @@ class Simulator:
         if self.queue.status < self.queue.capacity:
             self.queue.enqueue()
             if self.queue.status <= self.servers:
-                # TODO: Escalonar evento de saída
                 delta_time = self.time + self.random_interval(self.service_interval[0], self.service_interval[1])
                 self.scheduler.add_event(Event(EventType.LEAVE, delta_time))
         else:
             self.losses += 1
-    
-        # TODO: Escalonar evento de chegada
+
         delta_time = self.time + self.random_interval(self.arrival_interval[0], self.arrival_interval[1])
         self.scheduler.add_event(Event(EventType.ARRIVE, delta_time))
     
@@ -81,19 +78,19 @@ class Simulator:
             self.states.append(0.0)
     
     def __str__(self) -> str:
-        return f'SimpleQueue: {self.queue}; Servers: {self.servers}; Losses: {self.losses} \nStates:\n{self.__states_to_str()}'
+        return f'SimpleQueue\n  Parameters:\n    {self.queue};\n    Servers: {self.servers};\n  Final values:\n    Losses: {self.losses};\n    Simulation Time: {round(self.time_last_event, 2)}\n  States:\n{self.__states_to_str()}'
     
     def __states_to_str(self):
         res = ''
         
+        res += '    Total time per state:\n'
+        
         for i in range(len(self.states)):
-            res += f'{i}: {round(self.states[i],4)}\n'
+            res += f'      {i}: {round(self.states[i],4)}\n'
+        
+        res += '    Probability Distribution:\n'
+        
+        for i in range(len(self.states)):
+            res += f'      {i}: {round((self.states[i]/self.time_last_event) * 100, 4)} %\n'
         
         return res
-    
-    def __random_numbers_to_str(self):
-        str = f'\nRandom numbers: {len(self.random_numbers)}\n'
-        for number in range(len(self.random_numbers)):
-            str += (f'{number} | {self.random_numbers[number]}\n')
-            
-        return str
